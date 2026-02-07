@@ -9,11 +9,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -94,7 +96,20 @@ fun ArtworkCitation(modifier: Modifier = Modifier) {
 
 @Composable
 fun DisplayController(modifier: Modifier = Modifier) {
-    Text(text = "TODO: DisplayController")
+    Row(modifier = modifier) {
+        Button(
+            modifier = Modifier.weight(1f),
+            onClick = { }
+        ) {
+            Text(stringResource(R.string.previous))
+        }
+        Button(
+            modifier = Modifier.weight(1f),
+            onClick = { }
+        ) {
+            Text(stringResource(R.string.next))
+        }
+    }
 }
 
 @Composable
@@ -115,21 +130,29 @@ fun ArtworkSpaceApp(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ArtworkCardPreview() {
-    ArtSpaceAppTheme {
-        ArtworkCard()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ArtworkCardPreview() {
+//    ArtSpaceAppTheme {
+//        ArtworkCard()
+//    }
+//}
 
-@Preview(showBackground = true)
-@Composable
-fun ArtworkCitationPreview() {
-    ArtSpaceAppTheme {
-        ArtworkCitation()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ArtworkCitationPreview() {
+//    ArtSpaceAppTheme {
+//        ArtworkCitation()
+//    }
+//}
+
+//@Preview(showBackground = true)
+//@Composable
+//fun DisplayControllerPreview() {
+//    ArtSpaceAppTheme {
+//        DisplayController()
+//    }
+//}
 
 //@Preview(showBackground = true)
 //@Composable

@@ -9,4 +9,6 @@
     <string name="artwork3_title">The Basket of Apples</string>
     <string name="artwork3_artist">Paul Cezanne</string>
     <string name="artwork3_year">1893</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
 </resources>
