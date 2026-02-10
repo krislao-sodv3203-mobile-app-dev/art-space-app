@@ -28,6 +28,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +46,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.artspaceapp.data.Datasource
 import com.example.artspaceapp.model.Artwork
 import com.example.artspaceapp.ui.theme.ArtSpaceAppTheme
 
@@ -97,46 +102,48 @@ fun ArtworkCitation(
     @StringRes year: Int,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier) {
-        Column(
-            modifier = Modifier
-                .background(Color(0xFFECEBF4))
-                .padding(20.dp)
-        ) {
-            Text(
-                text = stringResource(title),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Light,
-                textAlign = TextAlign.Left
-            )
-            Text(
-                buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append(stringResource(artist))
-                    }
-                    append(" (${stringResource(year)})")
+    Column(
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier
+            .background(Color(0xFFECEBF4))
+            .padding(20.dp)
+    ) {
+        Text(
+            text = stringResource(title),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Light,
+            textAlign = TextAlign.Left
+        )
+        Text(
+            buildAnnotatedString {
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(stringResource(artist))
                 }
-            )
-        }
+                append(" (${stringResource(year)})")
+            }
+        )
     }
-
 }
 
 @Composable
-fun DisplayController(modifier: Modifier = Modifier) {
+fun DisplayController(
+    onNextClick: () -> Unit,
+    onPreviousClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier.fillMaxWidth()
     ) {
         Button(
             modifier = Modifier.widthIn(120.dp),
-            onClick = { /* TODO */ }
+            onClick = onPreviousClick
         ) {
             Text(stringResource(R.string.previous))
         }
         Button(
             modifier = Modifier.widthIn(120.dp),
-            onClick = { /* TODO */ }
+            onClick = onNextClick
         ) {
             Text(stringResource(R.string.next))
         }
@@ -165,38 +172,49 @@ fun Artwork(
             title = artwork.titleResourceId,
             artist = artwork.artistResourceId,
             year = artwork.yearResourceId,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
         )
     }
 }
 
 @Composable
 fun ArtworkSpaceApp(modifier: Modifier = Modifier) {
-    val artwork = Artwork(
-        imageResourceId = R.drawable.artwork3,
-        titleResourceId = R.string.artwork1_title,
-        artistResourceId = R.string.artwork1_artist,
-        yearResourceId = R.string.artwork1_year
-    )
+    // load artworks only once
+    val artworkList = remember { Datasource().loadArtworks() }
+    // keep track of current artwork Id
+    var currentIndex by remember { mutableIntStateOf(0) }
+    // retrieve artwork at given index
+    val artwork = artworkList.elementAt(currentIndex)
+
     val scrollState = rememberScrollState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
+        Spacer(modifier = Modifier.height(80.dp))
+
         Column(
-            verticalArrangement = Arrangement.Bottom,
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(scrollState)
         ) {
             Artwork(
                 artwork = artwork,
-                modifier = Modifier
+                modifier = Modifier.fillMaxWidth()
             )
         }
+
         Spacer(modifier = Modifier.height(24.dp))
         DisplayController(
+            onNextClick = {
+                currentIndex = (currentIndex + 1) % artworkList.size
+            },
+            onPreviousClick = {
+                currentIndex = (currentIndex - 1 + artworkList.size) % artworkList.size
+            },
             modifier = Modifier.padding(
                 vertical = 8.dp,
                 horizontal = 24.dp
@@ -234,7 +252,6 @@ fun ArtworkCitationPreview() {
             year = R.string.artwork1_year,
             modifier = Modifier
         )
-
     }
 }
 
@@ -242,6 +259,10 @@ fun ArtworkCitationPreview() {
 @Composable
 fun DisplayControllerPreview() {
     ArtSpaceAppTheme {
-        DisplayController(modifier = Modifier)
+        DisplayController(
+            onNextClick = {},
+            onPreviousClick = {},
+            modifier = Modifier
+        )
     }
 }
